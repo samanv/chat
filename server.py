@@ -21,9 +21,9 @@ class SecondaryServerSocket(asyncore.dispatcher_with_send):
         receivedData = self.recv(8192)
         if receivedData:
             every = clients.values()
+            print receivedData
             for one in every:
                 one.send(receivedData+'\n')
-                print receivedData
         else: self.close( )
     def handle_close(self):
         print "Client lost from:", self.getpeername( )
