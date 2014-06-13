@@ -11,7 +11,6 @@ if " " in name:
 else:
     pass
 HOST = 'localhost'
-# 108.66.162.111
 PORT = 21567
 BUFSIZE = 1024
 ADDR = (HOST, PORT)
