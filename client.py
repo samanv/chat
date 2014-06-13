@@ -15,14 +15,14 @@ PORT = 21567
 BUFSIZE = 1024
 ADDR = (HOST, PORT)
 print "Connecting..."
-#try:
-tcpCliSock = socket(AF_INET, SOCK_STREAM)
-tcpCliSock.connect(ADDR)
-#pass
-#except:
-#    print "A connection to the server could not be established. Please check your connection, and the status of the remote server, then try again."
-#    time.sleep(3)
-#    quit()
+try:
+    tcpCliSock = socket(AF_INET, SOCK_STREAM)
+    tcpCliSock.connect(ADDR)
+    pass
+except:
+    print "A connection to the server could not be established. Please check your connection, and the status of the remote server, then try again."
+    time.sleep(3)
+    quit()
 print "Connection successful."
 inmsg=time.strftime("%I:%M:%S %p") + " - " + name+" has joined!"
 tcpCliSock.send(inmsg)
