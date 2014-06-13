@@ -39,21 +39,31 @@ class Application(Frame):
                 pass
             quit()
         elif message[:3] == "/me":
-            messages=time.strftime("%I:%M:%S %p") + " - " + name + message[3:]
-            tcpCliSock.send(messages)
-        elif message [:5] == "/nick":
-            oldname = name
-            name = message[6:]
-            if oldname==name:
-                err=time.strftime("%I:%M:%S %p") + " - " + "You are already known as "+name+".\n"
-                self.messaging_field.config(state=NORMAL)
-                self.messaging_field.insert(END, err)
-                self.messaging_field.yview_moveto(1.0)
-                self.messaging_field.config(state=DISABLED)
+            action = message[3:]
+            checkac = action.replace(" ", "")
+            if checkac == "":
                 pass
             else:
-                messages=time.strftime("%I:%M:%S %p") + " - " + oldname+" changed their nick to "+name+"."
+                messages=time.strftime("%I:%M:%S %p") + " - " + name + message[3:]
                 tcpCliSock.send(messages)
+        elif message [:5] == "/nick":
+            newname=message[6:]
+            chkname = newname.replace(" ", "")
+            if chkname == "":
+                pass
+            else:
+                oldname = name
+                name = message[6:]
+                if oldname==name:
+                    err=time.strftime("%I:%M:%S %p") + " - " + "You are already known as "+name+".\n"
+                    self.messaging_field.config(state=NORMAL)
+                    self.messaging_field.insert(END, err)
+                    self.messaging_field.yview_moveto(1.0)
+                    self.messaging_field.config(state=DISABLED)
+                    pass
+                else:
+                    messages=time.strftime("%I:%M:%S %p") + " - " + oldname+" changed their nick to "+name+"."
+                    tcpCliSock.send(messages)
         elif message [:1] == "/":
             err=time.strftime("%I:%M:%S %p") + " - " + message+" - command not found\n"
             self.messaging_field.config(state=NORMAL)
