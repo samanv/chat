@@ -5,19 +5,25 @@ import thread
 
 global name
 name = str(raw_input("Screen name: "))
+if " " in name:
+    print "Spaces are not allowed. They will be replaced with blank space."
+    name=name.replace(" ", "")
+else:
+    pass
 HOST = 'localhost'
+# 108.66.162.111
 PORT = 21567
 BUFSIZE = 1024
 ADDR = (HOST, PORT)
 print "Connecting..."
-try:
-    tcpCliSock = socket(AF_INET, SOCK_STREAM)
-    tcpCliSock.connect(ADDR)
-    pass
-except:
-    print "A connection to the server could not be established. Please check your connection, and the status of the remote server, then try again."
-    time.sleep(3)
-    quit()
+#try:
+tcpCliSock = socket(AF_INET, SOCK_STREAM)
+tcpCliSock.connect(ADDR)
+#pass
+#except:
+#    print "A connection to the server could not be established. Please check your connection, and the status of the remote server, then try again."
+#    time.sleep(3)
+#    quit()
 print "Connection successful."
 inmsg=time.strftime("%I:%M:%S %p") + " - " + name+" has joined!"
 tcpCliSock.send(inmsg)
@@ -53,7 +59,8 @@ class Application(Frame):
                 pass
             else:
                 oldname = name
-                name = message[6:]
+                names = message[6:]
+                name=names.replace(" ", "")
                 if oldname==name:
                     err=time.strftime("%I:%M:%S %p") + " - " + "You are already known as "+name+".\n"
                     self.messaging_field.config(state=NORMAL)
@@ -90,7 +97,7 @@ class Application(Frame):
         
         self.messaging_field = Text(self, wrap = WORD, font="Arial 10 normal", state=DISABLED)
         self.messaging_field.pack({"side": "top"}, expand=YES, fill=BOTH)
-
+        
         self.entry_field = Entry(self, font="Arial 10 normal")
         self.entry_field.pack({"side": "bottom"}, expand=YES, fill=BOTH)
         self.entry_field.bind('<Return>', self.callback)
