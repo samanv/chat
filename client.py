@@ -5,15 +5,21 @@ import thread
 
 global name
 name = str(raw_input("Screen name: "))
-HOST = 'silvahwuff.pythonanywhere.com'
+HOST = 'localhost'
 PORT = 21567
 BUFSIZE = 1024
 ADDR = (HOST, PORT)
 print "Connecting..."
-tcpCliSock = socket(AF_INET, SOCK_STREAM)
-tcpCliSock.connect(ADDR)
+try:
+    tcpCliSock = socket(AF_INET, SOCK_STREAM)
+    tcpCliSock.connect(ADDR)
+    pass
+except:
+    print "A connection to the server could not be established. Please check your connection, and the status of the remote server, then try again."
+    time.sleep(3)
+    quit()
 print "Connection successful."
-inmsg=name+" has joined!"
+inmsg=time.strftime("%I:%M:%S %p") + " - " + name+" has joined!"
 tcpCliSock.send(inmsg)
 
 class Application(Frame):
@@ -27,26 +33,29 @@ class Application(Frame):
         global name
         message = self.entry_field.get()
         if message[:5] == "/quit":
-            tcpCliSock.send(name+" has disconnected")
+            try:
+                tcpCliSock.send(time.strftime("%I:%M:%S %p") + " - " + name+" has disconnected")
+            except:
+                pass
             quit()
         elif message[:3] == "/me":
-            messages="* "+name+message[3:]
+            messages=time.strftime("%I:%M:%S %p") + " - " + name + message[3:]
             tcpCliSock.send(messages)
         elif message [:5] == "/nick":
             oldname = name
             name = message[6:]
             if oldname==name:
-                err="You are already known as "+name+".\n"
+                err=time.strftime("%I:%M:%S %p") + " - " + "You are already known as "+name+".\n"
                 self.messaging_field.config(state=NORMAL)
                 self.messaging_field.insert(END, err)
                 self.messaging_field.yview_moveto(1.0)
                 self.messaging_field.config(state=DISABLED)
                 pass
             else:
-                messages=oldname+" changed their nick to "+name+"."
+                messages=time.strftime("%I:%M:%S %p") + " - " + oldname+" changed their nick to "+name+"."
                 tcpCliSock.send(messages)
         elif message [:1] == "/":
-            err=message+" - command not found\n"
+            err=time.strftime("%I:%M:%S %p") + " - " + message+" - command not found\n"
             self.messaging_field.config(state=NORMAL)
             self.messaging_field.insert(END, err)
             self.messaging_field.yview_moveto(1.0)
@@ -54,8 +63,15 @@ class Application(Frame):
         elif message == "":
             pass
         else:
-            messages = name + ": " + message
-            tcpCliSock.send(messages)
+            messages = time.strftime("%I:%M:%S %p") + " - " + name + ": " + message
+            try:
+                tcpCliSock.send(messages)
+            except:
+                err=time.strftime("%I:%M:%S %p") + " - " + "Your message could not be sent. Try disconnecting and then connecting again.\n"
+                self.messaging_field.config(state=NORMAL)
+                self.messaging_field.insert(END, err)
+                self.messaging_field.yview_moveto(1.0)
+                self.messaging_field.config(state=DISABLED)
         self.entry_field.delete(0, END)
 
     def create_widgets(self):
@@ -86,8 +102,6 @@ class Application(Frame):
                 if data: self.add(data)
 
         thread.start_new_thread(loop0, ())
-
-
 
 root = Tk()
 root.resizable(0,0)
