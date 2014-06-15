@@ -10,6 +10,10 @@ if " " in name:
     name=name.replace(" ", "")
 else:
     pass
+if name=="":
+    print "You need a name to continue."
+    time.sleep(2)
+    quit()
 HOST = 'localhost'
 PORT = 21567
 BUFSIZE = 1024
@@ -24,7 +28,7 @@ except:
     time.sleep(3)
     quit()
 print "Connection successful."
-inmsg=time.strftime("%I:%M:%S %p") + " - " + name+" has joined!"
+inmsg=name+" has joined!"
 tcpCliSock.send(inmsg)
 
 class Application(Frame):
@@ -39,7 +43,7 @@ class Application(Frame):
         message = self.entry_field.get()
         if message[:5] == "/quit":
             try:
-                tcpCliSock.send(time.strftime("%I:%M:%S %p") + " - " + name+" has disconnected")
+                tcpCliSock.send(name+" has disconnected")
             except:
                 pass
             quit()
@@ -49,7 +53,7 @@ class Application(Frame):
             if checkac == "":
                 pass
             else:
-                messages=time.strftime("%I:%M:%S %p") + " - " + name + message[3:]
+                messages=name + message[3:]
                 tcpCliSock.send(messages)
         elif message [:5] == "/nick":
             newname=message[6:]
@@ -68,7 +72,7 @@ class Application(Frame):
                     self.messaging_field.config(state=DISABLED)
                     pass
                 else:
-                    messages=time.strftime("%I:%M:%S %p") + " - " + oldname+" changed their nick to "+name+"."
+                    messages=" changed their nick to "+name+"."
                     tcpCliSock.send(messages)
         elif message [:1] == "/":
             err=time.strftime("%I:%M:%S %p") + " - " + message+" - command not found\n"
@@ -79,7 +83,7 @@ class Application(Frame):
         elif message == "":
             pass
         else:
-            messages = time.strftime("%I:%M:%S %p") + " - " + name + ": " + message
+            messages = name + ": " + message
             try:
                 tcpCliSock.send(messages)
             except:
@@ -106,7 +110,8 @@ class Application(Frame):
 
     def add(self, data):
         self.messaging_field.config(state=NORMAL)
-        self.messaging_field.insert(END, data)
+        toadd=time.strftime("%I:%M:%S %p") + " - " + data
+        self.messaging_field.insert(END, toadd)
         self.messaging_field.yview_moveto(1.0)
         self.messaging_field.config(state=DISABLED)
         print data[:-1]
