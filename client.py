@@ -4,16 +4,23 @@ from socket import *
 import thread
 
 global name
-name = str(raw_input("Screen name: "))
-if " " in name:
-    print "Spaces are not allowed. They will be replaced with blank space."
-    name=name.replace(" ", "")
-else:
-    pass
-if name=="":
-    print "You need a name to continue."
-    time.sleep(2)
-    quit()
+
+def namecre():
+    global name
+    name = str(raw_input("Screen name: "))
+    if " " in name:
+        print "Spaces are not allowed. They will be replaced with blank space."
+        name=name.replace(" ", "")
+    else:
+        pass
+    if name=="":
+        print "You need a name to continue."
+        time.sleep(1)
+        namecre()
+    else:
+        pass
+
+namecre()
 HOST = 'localhost'
 PORT = 21567
 BUFSIZE = 1024
